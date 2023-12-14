@@ -3,6 +3,7 @@ from skimage import io
 import numpy as np
 import matplotlib.pyplot as plt
 import math
+import platform
 
 def main():
     print("--------- Start ---------")
@@ -11,8 +12,18 @@ def main():
     # コマンドライン引数を出力する
     print(args)
 
+    # 
+    RAW_FILE_PATH = "";
+    print(platform.system())
+    if(platform.system() == "Darwin"):
+        RAW_FILE_PATH = '../data/Canon-5DMarkII-Shotkit.tiff'
+    elif(platform.system() == "Windows"):
+        RAW_FILE_PATH = '..\data\Canon-5DMarkII-Shotkit.tiff'
+    else:
+        RAW_FILE_PATH = '../data/Canon-5DMarkII-Shotkit.tiff'
+    
     # RAWデータ読み込み
-    I = io.imread('..\data\Canon-5DMarkII-Shotkit.tiff')
+    I = io.imread(RAW_FILE_PATH)
     BLACK_LIMITED = 1024
     WHITE_LIMITED = 15600
 
