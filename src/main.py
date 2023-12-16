@@ -30,6 +30,18 @@ def avg_surround(index_i, index_j, arr):
     
     return value
 
+def get_gamma(value):
+    if(value < 0.04045):
+        return value / 12.92
+    else:
+        return ((value + 0.055) / 1.055) ** 2.4
+
+def get_linear_value(value):
+    if(value > 0.0031308):
+        return 1.055 * value ** (1.0 / 2.4) - 0.055
+    else:
+        return 12.92 * value
+
 def main():
     print("--------- Start ---------")
     # コマンドライン引数を取得する
@@ -161,15 +173,32 @@ def main():
 
     print(" 5. 执行白平衡：灰世界假设")
 
+    r_avg = np.average(r_float)
+    g_avg = np.average(g_float)
+    b_avg = np.average(b_float)
 
+    for i, row in enumerate(r_float):
+        # print("Row {}: {}".format(i, row))
+        for j, value in enumerate(row):
+            r_float[i, j] = (g_avg / r_avg) * r_float[i, j]
+            b_float[i, j] = (g_avg / b_avg) * b_float[i, j]
 
-
+    print(" 6. 亮度调整和伽玛编码")
+    for i, row in enumerate(r_float):
+        # print("Row {}: {}".format(i, row))
+        for j, value in enumerate(row):
+            r_float[i, j] = get_linear_value(r_float[i, j])
+            g_float[i, j] = get_linear_value(g_float[i, j])
+            b_float[i, j] = get_linear_value(b_float[i, j])
 
     # Finally, 输出图像
     im_rgb = np.dstack((r_float, g_float, b_float))
 
-    print(im_rgb[0, 0])
-    
+
+    fig = plt.figure()
+    fig.add_subplot(1, 2, 1)
+    plt.imshow(a_float)
+    fig.add_subplot(1, 2, 2)    
     plt.imshow(im_rgb)
     plt.show()
     print("---------  END  ---------")
